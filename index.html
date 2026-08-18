@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>물체의 운동을 방해하는 힘 실험실</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div class="top">
+  <h1>🧱 물체의 운동을 방해하는 힘</h1>
+  <span class="badge">중학교 1학년 과학 · 힘의 작용</span>
+  <span class="spacer"></span>
+  <a class="home" href="worksheet.html" target="fr-worksheet" data-win>📝 학습지 ↗</a>
+  <a class="home" href="teacher.html">선생님용 ▸</a>
+</div>
+
+<div class="wrap">
+
+  <div class="scenes" id="scenes">
+    <button type="button" class="scene-btn on" data-scene="pull"><span class="em">🧱</span> 당겨 보기</button>
+    <button type="button" class="scene-btn" data-scene="factors"><span class="em">📊</span> 무엇이 정할까</button>
+    <button type="button" class="scene-btn" data-scene="slope"><span class="em">⛰️</span> 빗면에서</button>
+    <button type="button" class="scene-btn" data-scene="mission"><span class="em">🏆</span> 미션 도전</button>
+  </div>
+
+  <div class="card hidden" id="missionCard">
+    <h2>🏆 미션 도전 <span class="step">깬 미션 <span id="missionScore">0 / 6</span></span></h2>
+    <p class="lead">먼저 <b>예측</b>하고, 실제로 <b>확인</b>하세요. 성공하면 이유가 열립니다.</p>
+    <div class="mission-list" id="missionList"></div>
+    <div class="mission-body hidden" id="missionBody">
+      <h3 id="mTitle"></h3>
+      <p id="mStory"></p>
+      <div class="predict hidden" id="mPredict">
+        <div class="q" id="mQ"></div>
+        <div class="opts" id="mOpts"></div>
+      </div>
+      <div class="predict hidden" id="mGoals"></div>
+      <div class="verdict hidden" id="mVerdict"></div>
+    </div>
+  </div>
+
+  <div class="stage-wrap">
+
+    <div>
+      <div class="playbar">
+        <button type="button" class="btn" id="btnReset">↺ 처음으로</button>
+        <button type="button" class="btn" id="btnRecord">📋 지금 값 기록</button>
+      </div>
+
+      <div class="stage">
+        <canvas id="stage"></canvas>
+        <div class="stage-tip" id="tip"></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2>📋 실험 기록 <span class="step">학습지에 옮겨 적기</span></h2>
+        <p class="lead">궁금한 값이 나오면 <b>📋 지금 값 기록</b>을 누르세요.</p>
+        <div class="tablescroll">
+          <table class="grid">
+            <thead>
+              <tr><th>번호</th><th>접촉면</th><th>상자</th><th>당기는 힘</th><th>마찰력</th><th>한계</th><th>움직임</th></tr>
+            </thead>
+            <tbody id="recBody"></tbody>
+          </table>
+        </div>
+        <p id="recEmpty" class="hint">아직 기록이 없습니다.</p>
+        <div class="btnrow"><button type="button" class="btn" id="btnClearRec">기록 지우기</button></div>
+      </div>
+
+      <div class="card">
+        <h2>🔎 무엇을 보고 있는 걸까?</h2>
+        <div class="hint">
+          <b>마찰력</b> — 접촉면에서 물체가 운동하는 것을 <b>방해하는 힘</b>.<br>
+          <b>크기</b>는 물체에 주는 힘과 <b>같고</b>, <b>방향</b>은 <b>반대</b>입니다.
+        </div>
+        <div class="warnbox">
+          <b>이 앱의 결론은 두 가지입니다.</b><br>
+          ① <b>마찰력은 스스로 정해진 크기가 없습니다.</b> 내가 당기는 만큼 따라서 커집니다 —
+          <b>한계</b>에 닿기 전까지는요. 그래서 움직이지 않을 때는
+          <b>용수철저울의 눈금이 곧 마찰력</b>입니다.<br>
+          ② <b>한계</b>는 <b>무게가 클수록, 접촉면이 거칠수록</b> 커집니다.
+          당기는 힘이 그 한계를 넘어서면 물체가 <b>움직이기 시작</b>합니다.
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <h3 id="gaugeTitle">🧱 두 힘</h3>
+        <p class="sub" id="gaugeSub">당기는 만큼 마찰력도 커진다</p>
+        <div class="bars">
+          <div class="bar-row total">
+            <div class="bar-name"><span class="dot" style="background:#fbbf24"></span><span id="barName1">당기는 힘 →</span></div>
+            <div class="bar-track" id="barA">
+              <div class="bar-fill" style="background:linear-gradient(90deg,#fde68a,#f59e0b)"></div>
+              <div class="bar-val">0</div>
+            </div>
+          </div>
+          <div class="bar-row" id="rowB">
+            <div class="bar-name"><span class="dot" style="background:#a78bfa"></span><span id="barName2">← 마찰력</span></div>
+            <div class="bar-track" id="barB">
+              <div class="bar-fill" style="background:linear-gradient(90deg,#ddd6fe,#7c3aed)"></div>
+              <div class="bar-val">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="readouts">
+          <div class="ro"><b id="roName1">당기는 힘</b><span id="roVal1">-</span><i id="roUnit1"></i></div>
+          <div class="ro"><b id="roName2">마찰력</b><span id="roVal2">-</span><i id="roUnit2"></i></div>
+          <div class="ro"><b id="roName3">한계</b><span id="roVal3">-</span><i id="roUnit3"></i></div>
+          <div class="ro"><b id="roName4">상태</b><span id="roVal4">-</span><i id="roUnit4"></i></div>
+        </div>
+
+        <div class="formula">
+          <div id="fLaw"></div>
+          <div id="fWhy"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 id="graphTitle">📈 당기는 힘과 마찰력</h3>
+        <p class="sub" id="graphSub">한계까지는 같이 커지고, 넘으면 움직인다</p>
+        <canvas class="graph" id="graph"></canvas>
+      </div>
+
+      <div class="panel">
+        <h3>🎛️ 조작</h3>
+
+        <div class="ctl" data-for="pull mission" data-need="pull">
+          <label>용수철저울로 당기는 힘 <span id="valPull">0.0 N</span></label>
+          <input type="range" id="rngPull" min="0" max="10" step="0.1" value="0">
+        </div>
+
+        <div class="ctl" data-for="pull factors slope mission" data-need="surface">
+          <label>접촉면 <span></span></label>
+          <div class="chips" id="chipSurface">
+            <button type="button" class="chip" data-val="acryl">🧊 아크릴</button>
+            <button type="button" class="chip on" data-val="wood">🪵 나무판</button>
+            <button type="button" class="chip" data-val="sand">🧱 사포</button>
+          </div>
+        </div>
+
+        <div class="ctl" data-for="pull factors slope mission" data-need="boxes">
+          <label>쌓은 상자 <span id="valBoxes">1 개</span></label>
+          <input type="range" id="rngBoxes" min="1" max="3" step="1" value="1">
+        </div>
+
+        <div class="ctl" data-for="slope mission" data-need="motion">
+          <label>빗면에서 어떻게? <span></span></label>
+          <div class="chips" id="chipMotion">
+            <button type="button" class="chip on" data-val="down">⬇️ 미끄러져 내려간다</button>
+            <button type="button" class="chip" data-val="up">⬆️ 위로 끌어올린다</button>
+          </div>
+        </div>
+
+        <div class="hint" style="font-size:16px;margin-top:16px">
+          움직이지 않을 때는 <b>용수철저울의 눈금이 곧 마찰력</b>입니다.
+          두 힘이 <b>평형</b>을 이루고 있으니까요.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /stage-wrap -->
+
+  <div class="card">
+    <h2>📚 이 실험은 무엇과 이어질까</h2>
+    <div class="tablescroll">
+      <table class="grid">
+        <tr><th>소단원</th><th>학습 목표</th><th>여기서 하는 일</th></tr>
+        <tr><td>(5) 물체의 운동을 방해하는 힘</td>
+            <td class="left">마찰력의 크기와 방향을 설명할 수 있다</td>
+            <td class="left">🧱 당겨 보기 · 📊 무엇이 정할까 · ⛰️ 빗면에서</td></tr>
+        <tr><td>(3) 물체를 잡아당기는 힘</td>
+            <td class="left">중력의 크기와 방향 <em>(앞 소단원)</em></td>
+            <td class="left">잡아당기는 힘 실험실 <em>(다른 앱)</em></td></tr>
+        <tr><td>(6) 물체를 떠오르게 하는 힘</td>
+            <td class="left">부력과 중력에 따른 물체의 움직임 <em>(다음 소단원)</em></td>
+            <td class="left">떠오르게 하는 힘 실험실 <em>(다른 앱)</em></td></tr>
+      </table>
+    </div>
+    <div class="hint">
+      마찰력의 <b>한계</b>는 <b>무게</b>가 정합니다. 무게는 앞 소단원의 <b>중력</b>이에요 —
+      그래서 중력을 알고 나면 마찰력이 쉬워집니다.
+    </div>
+  </div>
+
+</div>
+
+<script src="js/pdf.js"></script>
+<script src="js/friction.js"></script>
+<script src="js/lab.js"></script>
+</body>
+</html>
