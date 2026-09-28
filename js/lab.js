@@ -59,7 +59,7 @@
              "조금 당겼을 때 블록은 <b>바로</b> 움직일까?",
       scene: "pull", setup: { pull: 0, surface: "wood", boxes: 1 }, allow: ["pull", "surface", "boxes"],
       predict: { q: "조금 당기면 블록은?",
-                 opts: ["바로 움직인다", "<b>움직이지 않는다</b>", "뒤로 밀린다"], ans: 1 },
+                 opts: ["바로 움직인다", "움직이지 않는다", "뒤로 밀린다"], ans: 1 },
       goals: [{ key: "held", text: "당겼는데도 <b>움직이지 않는</b> 상태 만들어 보기" }],
       why: "<b>움직이지 않습니다.</b><br>" +
            "접촉면에서 <b>반대 방향으로 마찰력</b>이 작용해 당기는 힘과 <b>평형</b>을 이루기 때문이에요.<br>" +
@@ -71,7 +71,7 @@
              "당기는 힘을 <b>여러 값으로 바꿔 가며</b> 확인해 보자.",
       scene: "pull", setup: { pull: 0, surface: "wood", boxes: 1 }, allow: ["pull", "surface", "boxes"],
       predict: { q: "움직이지 않을 때 마찰력의 크기는?",
-                 opts: ["언제나 일정하다", "<b>당기는 힘과 같다</b>", "당기는 힘보다 크다"], ans: 1 },
+                 opts: ["언제나 일정하다", "당기는 힘과 같다", "당기는 힘보다 크다"], ans: 1 },
       goals: [{ key: "held2", text: "서로 <b>다른 두 힘</b>에서 마찰력 확인하기 (움직이지 않는 채로)" }],
       why: "<b>당기는 힘과 같습니다.</b> 방향만 반대예요.<br>" +
            "그래서 마찰력에는 <b>스스로 정해진 크기가 없습니다</b> — 내가 당기는 만큼 따라 커집니다.<br>" +
@@ -83,7 +83,7 @@
       scene: "pull", setup: { pull: 0, surface: "wood", boxes: 1 }, allow: ["pull", "surface", "boxes"],
       predict: { q: "블록이 움직이기 시작하는 때는?",
                  opts: ["아무리 세게 당겨도 안 움직인다",
-                        "<b>당기는 힘이 마찰력의 한계를 넘어설 때</b>",
+                        "당기는 힘이 마찰력의 한계를 넘어설 때",
                         "당기는 힘이 무게보다 클 때"], ans: 1 },
       goals: [{ key: "moved", text: "블록을 <b>움직이게</b> 만들기" }],
       why: "<b>당기는 힘이 마찰력의 한계를 넘어설 때</b> 움직이기 시작합니다.<br>" +
@@ -97,7 +97,7 @@
              "상자를 <b>2개 이상</b>으로 해 보자.",
       scene: "factors", setup: { surface: "wood", boxes: 1 }, allow: ["surface", "boxes"],
       predict: { q: "무거워지면 마찰력의 한계는?",
-                 opts: ["<b>커진다</b>", "작아진다", "변하지 않는다"], ans: 0 },
+                 opts: ["커진다", "작아진다", "변하지 않는다"], ans: 0 },
       goals: [{ key: "boxes2", text: "상자를 <b>2개 이상</b>으로 해 한계 확인하기" }],
       why: "<b>커집니다.</b> 학습지의 문장 그대로예요 — " +
            "<b>물체의 무게가 클수록 접촉면에서의 마찰력은 크다.</b><br>" +
@@ -109,7 +109,7 @@
              "어느 쪽이 더 잘 미끄러질까?",
       scene: "factors", setup: { surface: "wood", boxes: 1 }, allow: ["surface", "boxes"],
       predict: { q: "더 잘 미끄러지는 쪽은?",
-                 opts: ["<b>아크릴 면</b>", "사포 면", "둘이 같다"], ans: 0 },
+                 opts: ["아크릴 면", "사포 면", "둘이 같다"], ans: 0 },
       goals: [{ key: "sand", text: "<b>🧱 사포</b>에서 한계 확인하기" }],
       why: "<b>아크릴 면</b>이 더 잘 미끄러집니다.<br>" +
            "학습지의 문장 그대로예요 — <b>접촉면이 거칠수록 마찰력은 크다.</b> " +
@@ -123,7 +123,7 @@
       scene: "slope", setup: { motion: "down", surface: "wood", boxes: 1 }, allow: ["motion", "surface", "boxes"],
       predict: { q: "마찰력의 방향은?",
                  opts: ["언제나 빗면 위쪽", "언제나 빗면 아래쪽",
-                        "<b>운동하려는 방향의 반대쪽</b>"], ans: 2 },
+                        "운동하려는 방향의 반대쪽"], ans: 2 },
       goals: [
         { key: "motionDown", text: "<b>⬇️ 미끄러져 내려갈 때</b> 보기" },
         { key: "motionUp",   text: "<b>⬆️ 위로 끌어올릴 때</b> 보기" }
@@ -543,7 +543,9 @@
       var opts = $("mOpts"); opts.innerHTML = "";
       M.predict.opts.forEach(function (t, i) {
         var b = document.createElement("button");
-        b.type = "button"; b.className = "opt"; b.innerHTML = t;
+        b.type = "button"; b.className = "opt";
+        /* 예측 보기에는 굵은 글씨를 쓰지 않는다 — 정답만 굵으면 답이 드러난다(2026-09-28). */
+        b.innerHTML = String(t).replace(/<\/?b>/g, "");
         b.addEventListener("click", function () {
           S.predictPick = i; S.missionState = "ready"; renderMissionBody();
         });
